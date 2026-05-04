@@ -55,15 +55,17 @@ const Dashboard = () => {
                 ...formData
             };
             await api.post('/apply', payload);
-            setSuccess('Başvurunuz başarıyla alındı!');
             
             // Re-fetch application
             const response = await api.get('/candidate/application');
             if (response.data.application) {
                 setApplication(response.data.application);
+                setSuccess(t('dashboard.apply_success'));
+                setError(''); // Clear error on success
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Başvuru sırasında bir hata oluştu.');
+            setSuccess(''); // Clear success on error
+            setError(err.response?.data?.error || t('dashboard.apply_error'));
         } finally {
             setSubmitLoading(false);
         }
@@ -104,7 +106,7 @@ const Dashboard = () => {
                             </div>
                             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 relative overflow-hidden group">
                                 <p className="text-sm font-bold text-slate-500 mb-1">{t('dashboard.salary_encrypted')}</p>
-                                <p className="text-xl font-black text-slate-800 blur-[3px] group-hover:blur-none transition-all duration-300">
+                                <p className="text-xl font-black text-slate-800 blur-[10px] group-hover:blur-none transition-all duration-300">
                                     {application.salary} ₺
                                 </p>
                                 <span className="absolute top-4 right-4 bg-slate-200 text-slate-600 text-xs font-bold px-2 py-1 rounded">AES 256</span>

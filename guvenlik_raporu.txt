@@ -14,7 +14,8 @@ Erişim kısıtlaması hem Frontend hem de Backend katmanlarında senkronize şe
 
 Prevention of Unauthorized Access (Yetkisiz Erişimin Engellenmesi)
 - Server-Side Validation: Sadece URL'yi bilmek (Direct Object Reference) İK sayfasına girmek için yeterli değildir. Sunucu her istekte JWT içindeki rol bilgisini veritabanı ile doğrular.
-- Special Code Authentication: İK paneline geçiş, backend tarafında sabitlenen "HR-SECURE-2026" özel kodu ile korunur. Bu kod girildiğinde kullanıcının rolü veritabanında kalıcı olarak "HR" olarak güncellenir.
+- Special Code Authentication: İK paneline geçiş, backend tarafında .env dosyasında saklanan ve kod içerisinde açıkça görünmeyen özel yetki kodu ile korunur.
+- Rate Limiting & Account Lockout (Deneme Sınırı): Brute-force saldırılarını engellemek için "3 yanlış deneme" sınırı getirilmiştir. 3 kez üst üste hatalı kod girilmesi durumunda, ilgili kullanıcı hesabı 1 saat boyunca İK yetki girişine kapatılır (Lockout).
 - Frontend Security Visualization: Aday panelinde maaş gibi hassas veriler CSS 'blur' efekti ve "AES 256" rozeti ile gösterilerek veri gizliliği vurgulanır.
 
 Access Control Ekran Görüntüleri:

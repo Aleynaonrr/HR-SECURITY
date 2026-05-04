@@ -59,9 +59,11 @@ export const translations = {
         "dashboard.form_department": "Department",
         "dashboard.submit_button": "Submit Application Securely",
         "dashboard.submit_loading": "Submitting...",
+        "dashboard.apply_success": "Application submitted successfully!",
+        "dashboard.apply_error": "An error occurred during application.",
         "dashboard.hr_upgrade_title": "Are you an HR Personnel?",
         "dashboard.hr_upgrade_desc": "To access the system as HR, enter the security authorization code provided by your company.",
-        "dashboard.hr_upgrade_placeholder": "Security Code (e.g. HR-SECURE-2026)",
+        "dashboard.hr_upgrade_placeholder": "Security Authorization Code",
         "dashboard.hr_upgrade_button": "Verify",
         
         // Admin Panel (HR)
@@ -145,9 +147,11 @@ export const translations = {
         "dashboard.form_department": "Bölüm",
         "dashboard.submit_button": "Başvurumu Güvenli Şekilde Tamamla",
         "dashboard.submit_loading": "Gönderiliyor...",
+        "dashboard.apply_success": "Başvurunuz başarıyla alındı!",
+        "dashboard.apply_error": "Başvuru sırasında bir hata oluştu.",
         "dashboard.hr_upgrade_title": "İK Personeli misiniz?",
         "dashboard.hr_upgrade_desc": "Sisteme İK olarak erişmek için şirketinizin size sağladığı güvenlik doğrulama kodunu girin.",
-        "dashboard.hr_upgrade_placeholder": "Güvenlik Kodu (Örn: HR-SECURE-2026)",
+        "dashboard.hr_upgrade_placeholder": "Güvenlik Yetki Kodu",
         "dashboard.hr_upgrade_button": "Doğrula",
         
         // Admin Panel (HR)

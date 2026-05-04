@@ -23,6 +23,10 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
+    # RATE LIMITING: Track failed HR upgrade attempts to prevent brute-force
+    hr_upgrade_attempts = db.Column(db.Integer, default=0)
+    hr_upgrade_lockout_until = db.Column(db.DateTime, nullable=True)
+
     candidate = db.relationship('Candidate', uselist=False, back_populates='user')
     applications_reviewed = db.relationship('Application', foreign_keys='Application.reviewed_by',
                                             back_populates='reviewer')

@@ -31,65 +31,43 @@ with app.app_context():
 # Passwords are never stored in plaintext — set_password() hashes them securely (e.g., bcrypt)
 @app.route("/register", methods=["POST"])
 def register():
-<<<<<<< HEAD
     try:
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No input data provided!"}), 400
+
         first_name = data.get("first_name")
         last_name = data.get("last_name")
         email = data.get("email")
         password = data.get("password")
-        
-        if not all([first_name, last_name, email, password]):
-            return jsonify({"error": "Tüm alanlar zorunludur!"}), 400
 
+        # Validate that all required fields are present
+        if not all([first_name, last_name, email, password]):
+            return jsonify({"error": "All fields are required!"}), 400
+
+        # Validate email format using SecurityManager
+        if not SecurityManager.validate_email(email):
+            return jsonify({"error": "Invalid email format!"}), 400
+
+        # Validate password strength using SecurityManager
+        if not SecurityManager.validate_password(password):
+            return jsonify({"error": "Password must be at least 8 characters and contain uppercase, lowercase, digit and special character!"}), 400
+
+        # Prevent duplicate accounts by checking if the email is already registered
         if User.query.filter_by(email=email).first():
-            return jsonify({"error": "Bu e-posta adresi zaten kayıtlı!"}), 409
+            return jsonify({"error": "User with this email already exists!"}), 409
 
         new_user = User(
             first_name=first_name,
             last_name=last_name,
             email=email,
-            role="Candidate"
+            role="Candidate"  # Default role assigned to every new registrant
         )
+        # Hash and store the password securely
         new_user.set_password(password)
-        
+
         db.session.add(new_user)
         db.session.commit()
-=======
-    data = request.get_json()
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
-    email = data.get("email")
-    password = data.get("password")
-
-    # Validate that all required fields are present
-    if not all([first_name, last_name, email, password]):
-        return jsonify({"error": "All fields are required!"}), 400
-
-    # Validate email format using SecurityManager
-    if not SecurityManager.validate_email(email):
-        return jsonify({"error": "Invalid email format!"}), 400
-
-    # Validate password strength using SecurityManager
-    if not SecurityManager.validate_password(password):
-        return jsonify({"error": "Password must be at least 8 characters and contain uppercase, lowercase, digit and special character!"}), 400
-
-    # Prevent duplicate accounts by checking if the email is already registered
-    if User.query.filter_by(email=email).first():
-        return jsonify({"error": "User with this email already exists!"}), 409
-
-    new_user = User(
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        role="Candidate"  # Default role assigned to every new registrant
-    )
-    # Hash and store the password securely — no plaintext passwords are saved
-    new_user.set_password(password)
-
-    db.session.add(new_user)
-    db.session.commit()
->>>>>>> fe9dab6ed7a893a2c33cdd23b1363d84dab40744
 
         return jsonify({"message": "Kayıt başarılı!"}), 201
     except Exception as e:
@@ -98,27 +76,58 @@ def register():
         return jsonify({"error": f"Veritabanı hatası: {str(e)}"}), 500
 
 
+from datetime import datetime, timedelta
+
 # --- ACCESS CONTROL: Role Elevation to HR (Admin) ---
 # A logged-in Candidate can upgrade their role to "HR" (admin) by providing a secret code.
 # This route is protected by @token_required, so only authenticated users can call it.
-# In RBAC terms, this is the mechanism for granting elevated (admin) privileges.
+# Rate Limiting: 3 failed attempts results in a 1-hour lockout.
 @app.route("/hr/upgrade", methods=["POST"])
 @token_required
 def upgrade_to_hr():
     data = request.get_json()
     secret_code = data.get("secret_code")
-
-    # Verify the secret authorization code before granting HR/admin role
-    # The code is read from the environment variable for security
-    if secret_code != os.getenv("HR_SECRET_CODE"):
-        return jsonify({"error": "Invalid HR authorization code!"}), 403
-
+    
     user_id = request.user["id"]
     user = User.query.get(user_id)
-    if user:
-        # Elevate the user's role to HR (admin level) in the database
-        user.role = "HR"
+    
+    if not user:
+        return jsonify({"error": "User not found!"}), 404
+
+    # Check if user is currently locked out
+    if user.hr_upgrade_lockout_until and user.hr_upgrade_lockout_until > datetime.utcnow():
+        remaining_time = user.hr_upgrade_lockout_until - datetime.utcnow()
+        minutes = int(remaining_time.total_seconds() / 60)
+        return jsonify({
+            "error": f"Too many failed attempts! Your account is locked for {minutes} more minutes."
+        }), 403
+
+    # Verify the secret authorization code
+    correct_code = os.getenv("HR_SECRET_CODE")
+    
+    if secret_code != correct_code:
+        # Increment failed attempts
+        user.hr_upgrade_attempts += 1
+        
+        if user.hr_upgrade_attempts >= 3:
+            # Lock the account for 1 hour
+            user.hr_upgrade_lockout_until = datetime.utcnow() + timedelta(hours=1)
+            db.session.commit()
+            return jsonify({
+                "error": "3 failed attempts! Access restricted for 1 hour."
+            }), 403
+        
         db.session.commit()
+        remaining = 3 - user.hr_upgrade_attempts
+        return jsonify({
+            "error": f"Invalid HR code! {remaining} attempts remaining."
+        }), 403
+
+    # Success: Reset attempts and lockout
+    user.hr_upgrade_attempts = 0
+    user.hr_upgrade_lockout_until = None
+    user.role = "HR"
+    db.session.commit()
 
     return jsonify({"message": "Your role has been updated to HR! Please log in again."}), 200
 
@@ -269,6 +278,9 @@ def get_all_candidates():
     result = []
     for app_row in applications:
         candidate = app_row.candidate
+        if not candidate or not candidate.user:
+            continue
+            
         user = candidate.user
 
         # ENCRYPTION: Decrypt each candidate's salary for HR review
@@ -297,10 +309,12 @@ def get_all_candidates():
 @hr_required
 def get_hr_stats():
     applications = Application.query.all()
+    # Filter out corrupted records where candidate or user is missing
+    valid_applications = [a for a in applications if a.candidate and a.candidate.user]
     # Applications without a note are considered pending review
-    pending = [a for a in applications if not a.notes]
+    pending = [a for a in valid_applications if not a.notes]
     return jsonify({
-        "totalCandidates": len(applications),
+        "totalCandidates": len(valid_applications),
         "pendingReviews": len(pending),
         "alerts": 0
     }), 200
