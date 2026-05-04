@@ -44,7 +44,7 @@ const Navbar = () => {
                     onClick={toggleLanguage}
                     className="font-bold text-slate-600 hover:text-blue-600 bg-slate-100 hover:bg-blue-50 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200"
                 >
-                    {language === 'en' ? '🇹🇷 TR' : '🇬🇧 EN'}
+                    {language === 'en' ? 'TR' : 'EN'}
                 </button>
 
                 {user ? (
@@ -54,7 +54,7 @@ const Navbar = () => {
                             <span className="font-bold text-slate-800">{user?.user?.first_name || user?.first_name}</span>
                             {user.role === 'HR' && (
                                 <span className="ml-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-sm font-bold px-3 py-1 rounded-lg shadow-md">
-                                    İK
+                                    HR
                                 </span>
                             )}
                         </div>

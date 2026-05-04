@@ -12,7 +12,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
 
-// Uygulama Layout Bileşeni (Giriş yapmış kullanıcılar için Sidebar ve İçerik alanı)
+// Application Layout Component (Sidebar and Content area for logged-in users)
 const AppLayout = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen bg-slate-50">
@@ -27,7 +27,7 @@ const AppLayout = ({ children }) => {
     );
 };
 
-// Sadece Header gösterilecek Layout (Login/Register için)
+// Layout with only Header (for Login/Register)
 const AuthLayout = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen bg-slate-50">
@@ -57,7 +57,7 @@ function App() {
                         </AuthLayout>
                     } />
 
-                    {/* Protected Routes (Sadece giriş yapmış kullanıcılar) */}
+                    {/* Protected Routes (Authenticated users only) */}
                     <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <AppLayout>
@@ -75,10 +75,10 @@ function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Varsayılan Rota (Eğer oturum varsa dashboard'a, yoksa login'e atar) */}
+                    {/* Default Route (Redirects to dashboard if session exists, else to login) */}
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     
-                    {/* Bulunamayan sayfalar için */}
+                    {/* For pages not found */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
                 </Router>

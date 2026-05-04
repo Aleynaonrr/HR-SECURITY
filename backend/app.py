@@ -69,11 +69,11 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return jsonify({"message": "Kayıt başarılı!"}), 201
+        return jsonify({"message": "Registration successful!"}), 201
     except Exception as e:
         db.session.rollback()
-        print(f"Kayıt Hatası: {str(e)}")
-        return jsonify({"error": f"Veritabanı hatası: {str(e)}"}), 500
+        print(f"Registration Error: {str(e)}")
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 
 from datetime import datetime, timedelta

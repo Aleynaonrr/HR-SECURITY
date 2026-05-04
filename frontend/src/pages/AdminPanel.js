@@ -52,7 +52,7 @@ const AdminPanel = () => {
     };
 
     if (loading) {
-        return <div className="p-20 text-center text-2xl font-bold text-slate-500 animate-pulse">{t('admin.loading') || 'Yükleniyor...'}</div>;
+        return <div className="p-20 text-center text-2xl font-bold text-slate-500 animate-pulse">{t('admin.loading') || 'Loading...'}</div>;
     }
 
     return (
@@ -105,7 +105,7 @@ const AdminPanel = () => {
                                                 <p className="text-md font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-lg inline-block mt-2">{candidate.position}</p>
                                             </div>
                                             <span className="bg-gradient-to-br from-slate-700 to-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-2">
-                                                <span>AES</span> 🔒
+                                                <span>AES</span>
                                             </span>
                                         </div>
                                         
@@ -113,7 +113,7 @@ const AdminPanel = () => {
                                             <div className="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded-bl-lg">{t('admin.decrypted_salary')}</div>
                                             <p className="text-sm font-bold text-slate-500 mb-1">{t('admin.salary_label')}</p>
                                             <p className="font-mono font-black text-emerald-700 text-xl">
-                                                {candidate.decrypted_salary} ₺
+                                                {candidate.decrypted_salary}
                                             </p>
                                         </div>
 
@@ -165,7 +165,6 @@ const AdminPanel = () => {
                         </div>
                     ) : (
                         <div className="text-center py-16">
-                            <p className="text-2xl text-slate-400 font-bold mb-4">📭</p>
                             <p className="text-xl text-slate-500 font-medium">{t('admin.no_activity')}</p>
                         </div>
                     )}

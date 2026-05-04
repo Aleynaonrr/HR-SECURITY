@@ -48,7 +48,7 @@ const Register = () => {
             setTimeout(() => navigate('/login'), 2000);
             
         } catch (err) {
-            // Backend 'error' veya 'message' anahtarı ile hata dönebilir
+            // Backend might return error under 'error' or 'message' key
             const errorMessage = err.response?.data?.error || err.response?.data?.message || t('login.error_generic');
             setError(errorMessage);
             setLoading(false);

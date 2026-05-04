@@ -4,13 +4,13 @@ import { translations } from '../utils/translations';
 const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-    // Varsayılan dili localStorage'dan al, yoksa 'en' kullan
+    // Get default language from localStorage, if not exists use 'en'
     const [language, setLanguage] = useState(() => {
         const storedLang = localStorage.getItem('language');
         return storedLang ? storedLang : 'en';
     });
 
-    // Dil değiştiğinde localStorage'a kaydet
+    // Save to localStorage when language changes
     useEffect(() => {
         localStorage.setItem('language', language);
     }, [language]);
@@ -21,7 +21,7 @@ export const LanguageProvider = ({ children }) => {
         }
     };
 
-    // Çeviri fonksiyonu
+    // Translation function
     const t = (key) => {
         return translations[language][key] || key;
     };

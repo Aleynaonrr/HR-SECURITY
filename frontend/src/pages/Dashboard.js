@@ -72,7 +72,7 @@ const Dashboard = () => {
     };
 
     if (loading) {
-        return <div className="p-20 text-center text-2xl font-bold text-slate-500 animate-pulse">{t('dashboard.loading') || 'Yükleniyor...'}</div>;
+        return <div className="p-20 text-center text-2xl font-bold text-slate-500 animate-pulse">{t('dashboard.loading') || 'Loading...'}</div>;
     }
 
     return (
@@ -160,8 +160,8 @@ const Dashboard = () => {
 
             {/* HR Upgrade Section */}
             <div className="mt-12 bg-white/60 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200 p-8 max-w-2xl mx-auto">
-                <h4 className="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <span>🏢</span> {t('dashboard.hr_upgrade_title')}
+                <h4 className="text-xl font-bold text-slate-700 mb-4">
+                    {t('dashboard.hr_upgrade_title')}
                 </h4>
                 <p className="text-slate-500 font-medium mb-6">{t('dashboard.hr_upgrade_desc')}</p>
                 
@@ -176,7 +176,7 @@ const Dashboard = () => {
                             alert(res.data.message);
                             window.location.href = '/login'; // Force re-login
                         } catch (err) {
-                            alert(err.response?.data?.error || 'Doğrulama başarısız!');
+                            alert(err.response?.data?.error || 'Verification failed!');
                         }
                     }} 
                     className="flex gap-4"

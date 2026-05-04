@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Backend sunucusunun adresi (Şimdilik varsayılan 8000 olarak ayarlandı, gerekirse env'den çekilebilir)
+// Backend server address (Defaulting to 5000, can be pulled from env if needed)
 const API_URL = process.env.REACT_APP_API_URL || `http://${window.location.hostname}:5000`;
 
 const api = axios.create({
@@ -10,7 +10,7 @@ const api = axios.create({
     },
 });
 
-// Her istekte (request) otomatik olarak Authorization header eklemek için Interceptor
+// Interceptor to automatically add Authorization header to every request
 api.interceptors.request.use((config) => {
     const token = sessionStorage.getItem('token');
     if (token) {
@@ -21,12 +21,12 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-// Gelen yanıtlarda (response) 401 yetkisiz erişim hatalarını yakalamak için Interceptor
+// Interceptor to catch 401 unauthorized access errors in responses
 api.interceptors.response.use((response) => {
     return response;
 }, (error) => {
-    if (error.response && error.response.status === 401) {
-        // Token süresi dolmuş veya geçersizse otomatik çıkış yap
+    if (error.response && error.response.status === 401 && !error.config.url.includes('/login')) {
+        // Only logout and redirect if we are NOT on the login page
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('token');
         window.location.href = '/login';

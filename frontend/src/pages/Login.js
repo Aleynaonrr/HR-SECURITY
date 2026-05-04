@@ -16,7 +16,6 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         setLoading(true);
 
         try {
@@ -33,30 +32,31 @@ const Login = () => {
             setLoading(false);
             
         } catch (err) {
-            // Backend 'error' anahtarı ile hata dönüyor
+            // Backend might return error with 'error' or 'message' key
             const errorMessage = err.response?.data?.error || err.response?.data?.message || t('login.error_generic');
             setError(errorMessage);
+            setPassword(''); // Clear only the password field
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-100 py-20 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl w-full space-y-10 bg-white/80 backdrop-blur-xl p-14 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] border-t border-l border-white">
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gray-50 py-20 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl w-full space-y-10 bg-white p-14 rounded-3xl shadow-lg border border-gray-100">
                 <div>
-                    <h2 className="mt-2 text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-700 drop-shadow-sm">
+                    <h2 className="mt-2 text-center text-4xl font-extrabold text-gray-900">
                         {t('login.title')}
                     </h2>
-                    <p className="mt-4 text-center text-lg text-slate-600 font-medium">
+                    <p className="mt-4 text-center text-lg text-gray-600 font-medium">
                         {t('login.or')}{' '}
-                        <Link to="/register" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 transition-all">
+                        <Link to="/register" className="font-bold text-blue-600 hover:text-blue-500 transition-all">
                             {t('login.register_link')}
                         </Link>
                     </p>
                 </div>
                 
                 {error && (
-                    <div className="bg-red-50 border-l-8 border-red-500 p-5 mb-4 rounded-xl shadow-md">
+                    <div className="bg-red-50 border-l-4 border-red-500 p-5 mb-4 rounded">
                         <p className="text-lg font-medium text-red-700">{error}</p>
                     </div>
                 )}
@@ -64,26 +64,26 @@ const Login = () => {
                 <form className="mt-10 space-y-8" onSubmit={handleSubmit}>
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-lg font-bold text-slate-700 mb-2 drop-shadow-sm" htmlFor="email">{t('login.email')}</label>
+                            <label className="block text-lg font-bold text-gray-700 mb-2" htmlFor="email">{t('login.email')}</label>
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
                                 required
-                                className="appearance-none rounded-2xl relative block w-full px-5 py-4 border-2 border-slate-200 placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg transition-all shadow-inner bg-slate-50 focus:bg-white font-medium"
-                                placeholder="ornek@hr.com"
+                                className="appearance-none rounded-xl relative block w-full px-5 py-4 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg transition-all"
+                                placeholder="example@hr.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div>
-                            <label className="block text-lg font-bold text-slate-700 mb-2 drop-shadow-sm" htmlFor="password">{t('login.password')}</label>
+                            <label className="block text-lg font-bold text-gray-700 mb-2" htmlFor="password">{t('login.password')}</label>
                             <input
                                 id="password"
                                 name="password"
                                 type="password"
                                 required
-                                className="appearance-none rounded-2xl relative block w-full px-5 py-4 border-2 border-slate-200 placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg transition-all shadow-inner bg-slate-50 focus:bg-white font-medium"
+                                className="appearance-none rounded-xl relative block w-full px-5 py-4 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg transition-all"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -95,7 +95,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`group relative w-full flex justify-center py-4 px-6 border border-transparent text-xl font-bold rounded-2xl text-white ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-[0_10px_20px_rgba(79,70,229,0.3)] hover:shadow-[0_15px_30px_rgba(79,70,229,0.4)] hover:-translate-y-1'} focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform`}
+                            className={`group relative w-full flex justify-center py-4 px-6 border border-transparent text-xl font-bold rounded-xl text-white ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300`}
                         >
                             {loading ? t('login.button_loading') : t('login.button')}
                         </button>
