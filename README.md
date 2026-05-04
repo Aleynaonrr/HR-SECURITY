@@ -60,5 +60,34 @@ There are two main authorization levels in the system:
 ### 5. Layered Defense
 Security is provided not only on the client side (frontend) but primarily on the server side (backend) through middleware layers. Unauthorized API calls are directly rejected with 401/403 errors.
 
+###  Getting Started
+
+Follow these steps to set up and run the project on your local machine.
+# Navigate to the backend directory
+cd backend
+
+# Create and activate a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install required libraries
+pip install flask flask-sqlalchemy flask-bcrypt cryptography flask-jwt-extended flask-cors
+
+# Start the Flask server
+python app.py
+
+# Navigate to the frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the React development server
+npm start
 ---
 *This project has been prepared in accordance with secure software development standards.*
