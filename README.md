@@ -63,31 +63,39 @@ Security is provided not only on the client side (frontend) but primarily on the
 ###  Getting Started
 
 Follow these steps to set up and run the project on your local machine.
-# Navigate to the backend directory
+Navigate to the backend directory
+````commandline
 cd backend
 
-# Create and activate a virtual environment
+Create and activate a virtual environment
+````commandline
 python -m venv venv
 
-# Activate the virtual environment
+Activate the virtual environment
 # On Windows:
 venv\Scripts\activate
 # On macOS/Linux:
 source venv/bin/activate
 
-# Install required libraries
+Install required libraries
+````commandline
 pip install flask flask-sqlalchemy flask-bcrypt cryptography flask-jwt-extended flask-cors
 
-# Start the Flask server
+Start the Flask server
+````commandline
 python app.py
 
-# Navigate to the frontend directory
+Navigate to the frontend directory
+````commandline
 cd frontend
 
-# Install dependencies
+Install dependencies
+````commandline
 npm install
 
-# Start the React development server
+Start the React development server
+````commandline
 npm start
+
 ---
 *This project has been prepared in accordance with secure software development standards.*
