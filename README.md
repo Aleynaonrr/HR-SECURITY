@@ -75,7 +75,6 @@ cd frontend
 npm start
 ```
 
----
 
 ---
 *This project has been prepared in accordance with secure software development standards.*
