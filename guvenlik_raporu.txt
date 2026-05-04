@@ -1,0 +1,45 @@
+4. Access Control (RBAC) - Erişim Kontrolü Raporu
+
+Sistemdeki erişim hiyerarşisi ve güvenlik önlemleri aşağıda detaylandırılmıştır:
+
+Roles and Responsibilities (Roller ve Sorumluluklar)
+Sistemde iki temel rol tanımlanmıştır ve bu roller JWT (JSON Web Token) üzerinden doğrulanmaktadır:
+- User (Aday): Sisteme kayıt olduğunda varsayılan olarak "Candidate" rolünü alır. Sadece kendi profilini görebilir, başvurularını yönetebilir. Diğer adayların verilerine veya İK (Admin) paneline erişim yetkisi yoktur.
+- Admin (İK): Sistemde "HR" rolüne sahip kullanıcıdır. Tüm aday başvurularını listeleyebilir, hassas verileri (şifreli maaş) çözülmüş halde görebilir ve adaylar üzerine değerlendirme notları ekleyebilir.
+
+Implementation of Access Restriction (Erişim Kısıtlamasının Uygulanması)
+Erişim kısıtlaması hem Frontend hem de Backend katmanlarında senkronize şekilde çalışır:
+- Frontend UI Control: Aday giriş yaptığında sadece kendi paneline (Dashboard) yönlendirilir. "İK Personeli misiniz?" alanı sadece giriş yapmış kullanıcılara gösterilir. İK paneli linkleri aday yetkisindeki kullanıcılara gizlenir.
+- Middleware Protection (Ara Katman Koruması): Backend tarafında 'hr_required' ve 'token_required' decorator'ları (middleware) kullanılır. İK sayfasına ve API uçlarına giden tüm istekler, kullanıcının session/token bilgisindeki rolünü kontrol eden bu ara katmanlar tarafından denetlenir. Yetkisiz bir istek geldiğinde sistem otomatik olarak 403 (Forbidden) hatası döner.
+
+Prevention of Unauthorized Access (Yetkisiz Erişimin Engellenmesi)
+- Server-Side Validation: Sadece URL'yi bilmek (Direct Object Reference) İK sayfasına girmek için yeterli değildir. Sunucu her istekte JWT içindeki rol bilgisini veritabanı ile doğrular.
+- Special Code Authentication: İK paneline geçiş, backend tarafında sabitlenen "HR-SECURE-2026" özel kodu ile korunur. Bu kod girildiğinde kullanıcının rolü veritabanında kalıcı olarak "HR" olarak güncellenir.
+- Frontend Security Visualization: Aday panelinde maaş gibi hassas veriler CSS 'blur' efekti ve "AES 256" rozeti ile gösterilerek veri gizliliği vurgulanır.
+
+Access Control Ekran Görüntüleri:
+1. Aday Paneli: Adayın kendi başvuru durumunu ve maskelenmiş verilerini gördüğü ana ekran.
+2. İK Yetki Girişi: "İK Personeli misiniz?" bölümünde yer alan özel kod giriş alanı.
+3. Hata Mesajı: Yanlış kod girildiğinde alınan "Geçersiz İK Yetki Kodu!" uyarısı.
+4. İK Yönetim Paneli: Tüm adayların listelendiği ve verilerin deşifre edildiği yönetici arayüzü.
+
+--------------------------------------------------
+
+5. Encryption Implementation - Şifreleme Uygulaması
+
+Hassas verilerin güvenliği için uygulanan teknik detaylar şöyledir:
+
+Algorithm Selection (Algoritma Seçimi)
+Sistemde hassas verilerin (Maaş ve İletişim bilgileri) korunması için Fernet (Symmetric Authenticated Encryption) mimarisi kullanılmıştır. 
+- Teknik Detay: Bu yapı temelinde AES (Advanced Encryption Standard) algoritmasını kullanır. Endüstri standardı olarak kabul edilen bu yöntem, verinin hem gizliliğini hem de bütünlüğünü (değiştirilmediğini) garanti eder.
+- Güvenlik: Veritabanı ele geçirilse dahi, sunucu tarafındaki gizli anahtar (ENCRYPTION_KEY) olmadan veriler düz metin olarak okunamaz.
+
+Encryption & Decryption Process (Şifreleme ve Şifre Çözme Süreci)
+1. Encryption (Şifreleme):
+   - Aday başvuru formuna maaş bilgisini girer.
+   - Veri backend'e ulaştığında 'SecurityManager.encrypt_data' fonksiyonu tetiklenir.
+   - Veri, .env dosyasında saklanan güvenli anahtar ile şifrelenir ve veritabanına okunamaz bir 'cipher text' (Base64 formatında) olarak kaydedilir.
+2. Decryption (Şifre Çözme):
+   - İK yetkilisi aday listesini görüntülediğinde, backend veritabanından şifreli veriyi çeker.
+   - Sadece İK yetkisi olan isteklere özel olarak, sunucu tarafındaki anahtar kullanılarak veri 'SecurityManager.decrypt_data' ile tekrar okunabilir (plain text) hale getirilir.
+   - Sonuç, İK ekranına güvenli bir şekilde yansıtılır. Aday kendi panelinde bu veriyi sadece maskelenmiş/blur'lu şekilde görebilir.
