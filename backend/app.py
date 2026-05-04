@@ -24,30 +24,35 @@ with app.app_context():
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
-    email = data.get("email")
-    password = data.get("password")
-    
-    if not all([first_name, last_name, email, password]):
-        return jsonify({"error": "All fields are required!"}), 400
+    try:
+        data = request.get_json()
+        first_name = data.get("first_name")
+        last_name = data.get("last_name")
+        email = data.get("email")
+        password = data.get("password")
+        
+        if not all([first_name, last_name, email, password]):
+            return jsonify({"error": "Tüm alanlar zorunludur!"}), 400
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({"error": "User with this email already exists!"}), 409
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Bu e-posta adresi zaten kayıtlı!"}), 409
 
-    new_user = User(
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        role="Candidate"
-    )
-    new_user.set_password(password)
-    
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            role="Candidate"
+        )
+        new_user.set_password(password)
+        
+        db.session.add(new_user)
+        db.session.commit()
 
-    return jsonify({"message": "User registered successfully!"}), 201
+        return jsonify({"message": "Kayıt başarılı!"}), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Kayıt Hatası: {str(e)}")
+        return jsonify({"error": f"Veritabanı hatası: {str(e)}"}), 500
 
 
 @app.route("/hr/upgrade", methods=["POST"])
