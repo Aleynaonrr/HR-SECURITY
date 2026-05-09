@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(120), nullable=False)
     # Email is indexed for fast lookup during login
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    # AUTHENTICATION: Only the bcrypt hash is stored — never the plaintext password
+    # AUTHENTICATION: Only the scrypt hash is stored — never the plaintext password
     password_hash = db.Column(db.String(255), nullable=False)
     # ACCESS CONTROL (RBAC): Role determines which routes the user can access (e.g., "Candidate", "HR")
     role = db.Column(db.String(20), nullable=False, default='Candidate')
@@ -31,7 +31,7 @@ class User(UserMixin, db.Model):
     applications_reviewed = db.relationship('Application', foreign_keys='Application.reviewed_by',
                                             back_populates='reviewer')
 
-    # AUTHENTICATION: Hash the password using SecurityManager (bcrypt) before storing
+    # AUTHENTICATION: Hash the password using SecurityManager (scrypt) before storing
     def set_password(self, password):
         self.password_hash = SecurityManager.hash_password(password)
 
