@@ -65,3 +65,24 @@ def hr_required(f):
             return jsonify({"error": "Access denied! HR only."}), 403
         return f(*args, **kwargs)
     return decorated
+
+
+def log_action(user_id, action, resource=None):
+    """
+    Logs a security-relevant action to the database.
+    Captures the current IP address from the request context.
+    """
+    from models import db, AccessLog
+    
+    try:
+        new_log = AccessLog(
+            user_id=user_id,
+            action=action,
+            resource=resource,
+            ip_address=request.remote_addr
+        )
+        db.session.add(new_log)
+        db.session.commit()
+    except Exception as e:
+        print(f"Logging Error: {str(e)}")
+        db.session.rollback()

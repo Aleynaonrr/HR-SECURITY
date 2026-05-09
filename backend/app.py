@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from models import db, User, Candidate, Application, init_db
-from middleware import generate_token, token_required, hr_required
+from middleware import generate_token, token_required, hr_required, log_action
 from config import DevelopmentConfig
 from utils_security import SecurityManager
 
@@ -68,6 +68,9 @@ def register():
 
         db.session.add(new_user)
         db.session.commit()
+
+        # Log the registration event
+        log_action(new_user.id, "USER_REGISTERED", "Auth")
 
         return jsonify({"message": "Registration successful!"}), 201
     except Exception as e:
@@ -129,6 +132,9 @@ def upgrade_to_hr():
     user.role = "HR"
     db.session.commit()
 
+    # Log successful role upgrade
+    log_action(user.id, "ROLE_UPGRADE_SUCCESS", "HR_Access")
+
     return jsonify({"message": "Your role has been updated to HR! Please log in again."}), 200
 
 
@@ -152,6 +158,10 @@ def login():
 
     # Generate a signed JWT containing the user's role for downstream access control checks
     token = generate_token(user.id, user.first_name, user.last_name, user.role)
+    
+    # Log the login event
+    log_action(user.id, "USER_LOGIN_SUCCESS", "Auth")
+
     return jsonify({
         "token": token,
         "role": user.role,
@@ -218,6 +228,9 @@ def apply():
 
     db.session.add(new_app)
     db.session.commit()
+
+    # Log job application submission
+    log_action(user_id, "JOB_APPLICATION_SUBMITTED", f"App_ID: {new_app.id}")
 
     return jsonify({"message": "Application submitted successfully!"}), 201
 
@@ -299,6 +312,10 @@ def get_all_candidates():
             "decrypted_salary": decrypted_salary,
             "secret_note": app_row.notes
         })
+    
+    # Log HR access to candidate list (Security Audit)
+    log_action(request.user["id"], "HR_VIEWED_ALL_CANDIDATES", "Candidate_List")
+
     return jsonify(result), 200
 
 
