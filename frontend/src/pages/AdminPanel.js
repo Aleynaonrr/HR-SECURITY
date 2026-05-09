@@ -113,7 +113,7 @@ const AdminPanel = () => {
                                             <div className="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded-bl-lg">{t('admin.decrypted_salary')}</div>
                                             <p className="text-sm font-bold text-slate-500 mb-1">{t('admin.salary_label')}</p>
                                             <p className="font-mono font-black text-emerald-700 text-xl">
-                                                {candidate.decrypted_salary}
+                                                $ {candidate.decrypted_salary}
                                             </p>
                                         </div>
 

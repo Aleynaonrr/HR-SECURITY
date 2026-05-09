@@ -10,7 +10,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        window.location.href = '/login';
     };
 
     const toggleLanguage = () => {
@@ -47,7 +47,7 @@ const Navbar = () => {
                     {language === 'en' ? 'TR' : 'EN'}
                 </button>
 
-                {user ? (
+                {user && (user.token || sessionStorage.getItem('token')) ? (
                     <div className="flex items-center gap-6">
                         <div className="text-lg bg-slate-50 px-5 py-2 rounded-2xl shadow-inner border border-slate-100 flex items-center">
                             <span className="text-slate-500 font-medium mr-2">{t('navbar.welcome')}</span>

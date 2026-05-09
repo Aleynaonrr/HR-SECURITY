@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
         try {
             const storedUser = sessionStorage.getItem('user');
-            if (storedUser && storedUser !== 'undefined') {
+            if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
                 return JSON.parse(storedUser);
             }
         } catch (error) {
