@@ -10,7 +10,7 @@ HR-Soft is a platform that offers modern recruitment processes and employee data
 ## 🛠 Technology Stack
 - **Frontend:** React.js, Tailwind CSS, Axios
 - **Backend:** Python Flask, SQLAlchemy
-- **Security:** Bcrypt (Password Hashing), Cryptography.Fernet (AES-256 Data Encryption), JWT (Authentication)
+- **Security:** Bcrypt (Password Hashing), Cryptography.Fernet (AES-128 Data Encryption), JWT (Authentication)
 - **Database:** SQLite
 
 ## 📁 File Structure
@@ -41,8 +41,8 @@ HR-Soft/
 
 Our system is built on the "Security by Design" principle.
 
-### 1. End-to-End Data Privacy (AES-256)
-Sensitive data (e.g., Salary expectations or Contact information) is encrypted using the **AES-256 (Fernet)** standard before being saved to the database. Even if the database is leaked, these data are completely meaningless character strings without the server-side `ENCRYPTION_KEY`.
+### 1. End-to-End Data Privacy (AES-128)
+Sensitive data (e.g., Salary expectations or Contact information) is encrypted using the **AES-128 (Fernet)** standard before being saved to the database. Even if the database is leaked, these data are completely meaningless character strings without the server-side `ENCRYPTION_KEY`.
 
 ### 2. Secure Authentication (Bcrypt)
 User passwords are stored by hashing them with the **Bcrypt** algorithm, which is resistant to rainbow tables and brute-force attacks.
