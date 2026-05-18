@@ -10,12 +10,16 @@ const api = axios.create({
     },
 });
 
-// Interceptor to automatically add Authorization header to every request
+// Interceptor to automatically add Authorization and Language headers to every request
 api.interceptors.request.use((config) => {
     const token = sessionStorage.getItem('token');
+    const lang = localStorage.getItem('language') || 'en';
+    
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    config.headers['Accept-Language'] = lang;
     return config;
 }, (error) => {
     return Promise.reject(error);

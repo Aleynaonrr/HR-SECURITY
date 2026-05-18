@@ -38,15 +38,15 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token:
-            return jsonify({"error": "Token is missing!"}), 401
+            return jsonify({"error": "Token eksik! / Token is missing!"}), 401
         try:
             token = token.replace("Bearer ", "")
             data = jwt.decode(token, get_secret_key(), algorithms=["HS256"])
             request.user = data
         except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token has expired!"}), 401
+            return jsonify({"error": "Oturum süresi doldu! / Token has expired!"}), 401
         except jwt.InvalidTokenError:
-            return jsonify({"error": "Invalid token!"}), 401
+            return jsonify({"error": "Geçersiz oturum! / Invalid token!"}), 401
         return f(*args, **kwargs)
     return decorated
 
@@ -62,7 +62,7 @@ def hr_required(f):
     @token_required
     def decorated(*args, **kwargs):
         if request.user.get("role") != "HR":
-            return jsonify({"error": "Access denied! HR only."}), 403
+            return jsonify({"error": "Erişim Reddedildi! Sadece İK personeli girebilir. / Access denied! HR only."}), 403
         return f(*args, **kwargs)
     return decorated
 

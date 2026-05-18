@@ -90,19 +90,31 @@ from datetime import datetime, timedelta
 def upgrade_to_hr():
     data = request.get_json()
     secret_code = data.get("secret_code")
+    lang = request.headers.get("Accept-Language", "en")
     
     user_id = request.user["id"]
     user = User.query.get(user_id)
     
     if not user:
-        return jsonify({"error": "User not found!"}), 404
+        return jsonify({"error": "Kullanıcı bulunamadı!" if lang == 'tr' else "User not found!"}), 404
+
+    # SECURITY: Domain Whitelisting
+    # Only allow users with the official corporate email domain to become HR
+    allowed_domain = "@hr-soft.com"
+    if not user.email.endswith(allowed_domain):
+        # Log this unauthorized elevation attempt
+        from middleware import log_action
+        log_action(user.id, "UNAUTHORIZED_HR_UPGRADE_ATTEMPT_WRONG_DOMAIN", f"Email: {user.email}")
+        return jsonify({
+            "error": "Yetkisiz erişim denemesi!" if lang == 'tr' else "Unauthorized access attempt!"
+        }), 403
 
     # Check if user is currently locked out
     if user.hr_upgrade_lockout_until and user.hr_upgrade_lockout_until > datetime.utcnow():
         remaining_time = user.hr_upgrade_lockout_until - datetime.utcnow()
         minutes = int(remaining_time.total_seconds() / 60)
         return jsonify({
-            "error": f"Too many failed attempts! Your account is locked for {minutes} more minutes."
+            "error": f"Çok fazla hatalı deneme! Hesabınız {minutes} dakika kilitlendi." if lang == 'tr' else f"Too many failed attempts! Your account is locked for {minutes} more minutes."
         }), 403
 
     # Verify the secret authorization code
@@ -117,13 +129,13 @@ def upgrade_to_hr():
             user.hr_upgrade_lockout_until = datetime.utcnow() + timedelta(hours=1)
             db.session.commit()
             return jsonify({
-                "error": "3 failed attempts! Access restricted for 1 hour."
+                "error": "3 hatalı deneme! Erişim 1 saatliğine kısıtlandı." if lang == 'tr' else "3 failed attempts! Access restricted for 1 hour."
             }), 403
         
         db.session.commit()
         remaining = 3 - user.hr_upgrade_attempts
         return jsonify({
-            "error": f"Invalid HR code! {remaining} attempts remaining."
+            "error": f"Geçersiz İK kodu! Kalan hakkınız: {remaining}" if lang == 'tr' else f"Invalid HR code! {remaining} attempts remaining."
         }), 403
 
     # Success: Reset attempts and lockout
@@ -135,7 +147,7 @@ def upgrade_to_hr():
     # Log successful role upgrade
     log_action(user.id, "ROLE_UPGRADE_SUCCESS", "HR_Access")
 
-    return jsonify({"message": "Your role has been updated to HR! Please log in again."}), 200
+    return jsonify({"message": "Rolünüz İK olarak güncellendi! Lütfen tekrar giriş yapın." if lang == 'tr' else "Your role has been updated to HR! Please log in again."}), 200
 
 
 # --- AUTHENTICATION: User Login ---
@@ -179,9 +191,10 @@ def login():
 @app.route("/apply", methods=["POST"])
 @token_required
 def apply():
+    lang = request.headers.get("Accept-Language", "en")
     # RBAC check: only Candidates may submit applications
     if request.user["role"] != "Candidate":
-        return jsonify({"error": "Only candidates can apply!"}), 403
+        return jsonify({"error": "Sadece adaylar başvuru yapabilir!" if lang == 'tr' else "Only candidates can apply!"}), 403
 
     data = request.get_json()
     user_id = request.user["id"]
@@ -242,9 +255,10 @@ def apply():
 @app.route("/candidate/application", methods=["GET"])
 @token_required
 def get_my_application():
+    lang = request.headers.get("Accept-Language", "en")
     # RBAC check: HR users cannot access candidate-specific routes
     if request.user["role"] != "Candidate":
-        return jsonify({"error": "Only candidates can access this route!"}), 403
+        return jsonify({"error": "Bu sayfaya sadece adaylar erişebilir!" if lang == 'tr' else "Only candidates can access this route!"}), 403
 
     user_id = request.user["id"]
     candidate = Candidate.query.filter_by(user_id=user_id).first()
