@@ -222,15 +222,17 @@ def apply():
     data = request.get_json()
     user_id = request.user["id"]
 
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
+    # Retrieve name securely from the JWT token rather than relying on the client
+    first_name = request.user.get("first_name", "")
+    last_name = request.user.get("last_name", "")
+    
     job = data.get("job")
     school = data.get("school")
     department = data.get("department")
     salary = data.get("salary")
 
-    if not all([first_name, last_name, job, school, department, salary]):
-        return jsonify({"error": "All fields are required!"}), 400
+    if not all([job, school, department, salary]):
+        return jsonify({"error": "Formdaki tüm alanlar doldurulmalıdır!" if lang == 'tr' else "All form fields are required!"}), 400
 
     # Create a Candidate profile for this user if one does not already exist
     candidate = Candidate.query.filter_by(user_id=user_id).first()
