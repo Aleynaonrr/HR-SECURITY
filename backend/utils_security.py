@@ -2,7 +2,7 @@
 Security Management Module
 
 This module provides:
-1. Password Hashing (bcrypt)
+1. Password Hashing (scrypt)
 2. Data Encryption/Decryption (Fernet)
 3. Input Validation
 4. Security Utilities

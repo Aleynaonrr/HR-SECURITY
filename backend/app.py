@@ -28,7 +28,7 @@ with app.app_context():
 
 # --- AUTHENTICATION: User Registration ---
 # Allows new users to create an account with the default role "Candidate"
-# Passwords are never stored in plaintext — set_password() hashes them securely (e.g., bcrypt)
+# Passwords are never stored in plaintext — set_password() hashes them securely (e.g., scrypt)
 @app.route("/register", methods=["POST"])
 def register():
     try:
