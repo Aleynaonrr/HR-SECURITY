@@ -81,30 +81,44 @@ def register():
 
 from datetime import datetime, timedelta
 
-# --- ACCESS CONTROL: Role Elevation to HR (Admin) ---
-# A logged-in Candidate can upgrade their role to "HR" (admin) by providing a secret code.
-# This route is protected by @token_required, so only authenticated users can call it.
-# Rate Limiting: 3 failed attempts results in a 1-hour lockout.
-@app.route("/hr/upgrade", methods=["POST"])
-@token_required
-def upgrade_to_hr():
+# --- ACCESS CONTROL: HR Direct Login ---
+# Allows HR to login directly or upgrade from Candidate if they have the code
+@app.route("/hr/login", methods=["POST"])
+def hr_login():
     data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
     secret_code = data.get("secret_code")
     lang = request.headers.get("Accept-Language", "en")
-    
-    user_id = request.user["id"]
-    user = User.query.get(user_id)
-    
-    if not user:
-        return jsonify({"error": "Kullanıcı bulunamadı!" if lang == 'tr' else "User not found!"}), 404
+
+    if not email or not password or not secret_code:
+        return jsonify({"error": "E-posta, şifre ve yetki kodu zorunludur!" if lang == 'tr' else "Email, password, and security code required!"}), 400
+
+    user = User.query.filter_by(email=email).first()
+
+    # check_password() compares the submitted password against the stored hash
+    if not user or not user.check_password(password):
+        return jsonify({"error": "Geçersiz kimlik bilgileri!" if lang == 'tr' else "Invalid credentials!"}), 401
+
+    if user.role == "HR":
+        # Already HR, ignore code and login
+        token = generate_token(user.id, user.first_name, user.last_name, user.role)
+        from middleware import log_action
+        log_action(user.id, "HR_LOGIN_SUCCESS", "Auth")
+        return jsonify({
+            "token": token,
+            "role": user.role,
+            "user": {
+                "first_name": user.first_name,
+                "last_name": user.last_name
+            }
+        }), 200
 
     # SECURITY: Domain Whitelisting
-    # Only allow users with the official corporate email domain to become HR
     allowed_domain = "@hr-soft.com"
     if not user.email.endswith(allowed_domain):
-        # Log this unauthorized elevation attempt
         from middleware import log_action
-        log_action(user.id, "UNAUTHORIZED_HR_UPGRADE_ATTEMPT_WRONG_DOMAIN", f"Email: {user.email}")
+        log_action(user.id, "UNAUTHORIZED_HR_LOGIN_ATTEMPT_WRONG_DOMAIN", f"Email: {user.email}")
         return jsonify({
             "error": "Yetkisiz erişim denemesi!" if lang == 'tr' else "Unauthorized access attempt!"
         }), 403
@@ -138,16 +152,25 @@ def upgrade_to_hr():
             "error": f"Geçersiz İK kodu! Kalan hakkınız: {remaining}" if lang == 'tr' else f"Invalid HR code! {remaining} attempts remaining."
         }), 403
 
-    # Success: Reset attempts and lockout
+    # Success: Reset attempts and lockout, upgrade role
     user.hr_upgrade_attempts = 0
     user.hr_upgrade_lockout_until = None
     user.role = "HR"
     db.session.commit()
 
-    # Log successful role upgrade
-    log_action(user.id, "ROLE_UPGRADE_SUCCESS", "HR_Access")
+    # Generate token and log success
+    token = generate_token(user.id, user.first_name, user.last_name, user.role)
+    from middleware import log_action
+    log_action(user.id, "ROLE_UPGRADE_AND_LOGIN_SUCCESS", "HR_Access")
 
-    return jsonify({"message": "Rolünüz İK olarak güncellendi! Lütfen tekrar giriş yapın." if lang == 'tr' else "Your role has been updated to HR! Please log in again."}), 200
+    return jsonify({
+        "token": token,
+        "role": user.role,
+        "user": {
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }
+    }), 200
 
 
 # --- AUTHENTICATION: User Login ---

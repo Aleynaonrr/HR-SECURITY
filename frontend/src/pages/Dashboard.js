@@ -165,40 +165,6 @@ const Dashboard = () => {
                 )}
             </div>
 
-            {/* HR Upgrade Section */}
-            <div className="mt-12 bg-indigo-900/40 backdrop-blur-xl rounded-3xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.5)] border border-indigo-400/30 p-8 max-w-2xl mx-auto">
-                <h4 className="text-xl font-bold text-white mb-4">
-                    {t('dashboard.hr_upgrade_title')}
-                </h4>
-                <p className="text-slate-400 font-medium mb-6">{t('dashboard.hr_upgrade_desc')}</p>
-                
-                <form 
-                    onSubmit={async (e) => {
-                        e.preventDefault();
-                        const code = e.target.elements.secret_code.value;
-                        if (!code) return;
-                        
-                        try {
-                            const res = await api.post('/hr/upgrade', { secret_code: code });
-                            alert(res.data.message);
-                            window.location.href = '/login'; // Force re-login
-                        } catch (err) {
-                            alert(err.response?.data?.error || 'Verification failed!');
-                        }
-                    }} 
-                    className="flex gap-4"
-                >
-                    <input 
-                        type="password" 
-                        name="secret_code"
-                        placeholder={t('dashboard.hr_upgrade_placeholder')}
-                        className="flex-1 px-5 py-3 rounded-xl border-2 border-indigo-500/30 focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 outline-none font-medium bg-indigo-950/40 focus:bg-indigo-900/40 text-white placeholder-slate-400 transition-all"
-                    />
-                    <button type="submit" className="bg-purple-600/80 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-xl transition-colors border border-purple-400/50 shadow-lg">
-                        {t('dashboard.hr_upgrade_button')}
-                    </button>
-                </form>
-            </div>
         </div>
     );
 };

@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 
 // Pages
 import Login from './pages/Login';
+import HRLogin from './pages/HRLogin';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
@@ -49,6 +50,11 @@ function App() {
                     <Route path="/login" element={
                         <AuthLayout>
                             <Login />
+                        </AuthLayout>
+                    } />
+                    <Route path="/hr-login" element={
+                        <AuthLayout>
+                            <HRLogin />
                         </AuthLayout>
                     } />
                     <Route path="/register" element={

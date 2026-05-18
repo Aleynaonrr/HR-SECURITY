@@ -25,6 +25,12 @@ export const translations = {
         "login.button": "Sign In",
         "login.button_loading": "Signing in...",
         "login.error_generic": "An error occurred during sign in.",
+        "login.hr_login_link": "Are you HR Personnel? Login here.",
+        
+        // HR Login
+        "hr_login.title": "HR Personnel Login",
+        "hr_login.secret_code": "Security Authorization Code",
+        "hr_login.candidate_login_link": "Are you a candidate? Click here for standard login.",
         
         // Register
         "register.title": "Register",
@@ -121,6 +127,12 @@ export const translations = {
         "login.button": "Giriş Yap",
         "login.button_loading": "Giriş yapılıyor...",
         "login.error_generic": "Giriş yapılırken bir hata oluştu.",
+        "login.hr_login_link": "İK Personeli misiniz? Buradan giriş yapın.",
+        
+        // HR Login
+        "hr_login.title": "İK Personeli Girişi",
+        "hr_login.secret_code": "Güvenlik Yetki Kodu",
+        "hr_login.candidate_login_link": "Aday mısınız? Normal giriş için buraya tıklayın.",
         
         // Register
         "register.title": "Kayıt Ol",
