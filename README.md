@@ -10,7 +10,7 @@ HR-Soft is a platform that offers modern recruitment processes and employee data
 ## 🛠 Technology Stack
 - **Frontend:** React.js, Tailwind CSS, Axios
 - **Backend:** Python Flask, SQLAlchemy
-- **Security:** Bcrypt (Password Hashing), Cryptography.Fernet (AES-256 Data Encryption), JWT (Authentication)
+- **Security:** Scrypt (Password Hashing), Cryptography.Fernet (AES-128 Data Encryption), JWT (Authentication)
 - **Database:** SQLite
 
 ## 📁 File Structure

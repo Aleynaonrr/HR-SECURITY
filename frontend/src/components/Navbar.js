@@ -18,7 +18,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] sticky top-0 z-50 px-8 py-5 flex justify-between items-center transition-all duration-300">
+        <nav className="bg-slate-900/60 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] sticky top-0 z-50 px-8 py-5 flex justify-between items-center transition-all duration-300">
             <div className="flex items-center gap-4 group cursor-pointer">
                 <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-2 rounded-2xl shadow-[0_8px_15px_rgba(79,70,229,0.3)] group-hover:scale-105 transition-transform">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
@@ -34,7 +34,7 @@ const Navbar = () => {
                         <line x1="12" y1="12" x2="18" y2="20" />
                     </svg>
                 </div>
-                <span className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-600 tracking-tight drop-shadow-sm">
+                <span className="font-extrabold text-2xl text-white tracking-tight drop-shadow-sm">
                     HR
                 </span>
             </div>
@@ -42,16 +42,16 @@ const Navbar = () => {
             <div className="flex items-center gap-6">
                 <button 
                     onClick={toggleLanguage}
-                    className="font-bold text-slate-600 hover:text-blue-600 bg-slate-100 hover:bg-blue-50 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200"
+                    className="font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-2 rounded-xl transition-all shadow-sm border border-white/10"
                 >
                     {language === 'en' ? 'TR' : 'EN'}
                 </button>
 
                 {user && (user.token || sessionStorage.getItem('token')) ? (
                     <div className="flex items-center gap-6">
-                        <div className="text-lg bg-slate-50 px-5 py-2 rounded-2xl shadow-inner border border-slate-100 flex items-center">
-                            <span className="text-slate-500 font-medium mr-2">{t('navbar.welcome')}</span>
-                            <span className="font-bold text-slate-800">{user?.user?.first_name || user?.first_name}</span>
+                        <div className="text-lg bg-white/5 px-5 py-2 rounded-2xl shadow-inner border border-white/10 flex items-center">
+                            <span className="text-slate-400 font-medium mr-2">{t('navbar.welcome')}</span>
+                            <span className="font-bold text-white">{user?.user?.first_name || user?.first_name}</span>
                             {user.role === 'HR' && (
                                 <span className="ml-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-sm font-bold px-3 py-1 rounded-lg shadow-md">
                                     HR
@@ -67,10 +67,10 @@ const Navbar = () => {
                     </div>
                 ) : (
                     <div className="flex gap-4">
-                        <Link to="/login" className="text-lg font-bold text-slate-600 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 px-6 py-3 rounded-xl transition-all shadow-sm">
+                        <Link to="/login" className="text-lg font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 px-6 py-3 rounded-xl transition-all shadow-sm">
                             {t('navbar.login')}
                         </Link>
-                        <Link to="/register" className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 px-6 py-3 rounded-xl shadow-[0_8px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_12px_20px_rgba(79,70,229,0.4)] transform hover:-translate-y-1 transition-all duration-300">
+                        <Link to="/register" className="text-lg font-bold bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-400 hover:to-purple-500 px-6 py-3 rounded-xl shadow-[0_8px_15px_rgba(168,85,247,0.4)] hover:shadow-[0_12px_20px_rgba(168,85,247,0.6)] transform hover:-translate-y-1 transition-all duration-300">
                             {t('navbar.register')}
                         </Link>
                     </div>

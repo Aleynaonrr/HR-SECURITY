@@ -8,7 +8,7 @@ const Sidebar = () => {
     const { t } = useLanguage();
 
     return (
-        <aside className="w-80 bg-white/60 backdrop-blur-xl border-r border-slate-200/50 min-h-[calc(100vh-90px)] p-8 hidden md:flex flex-col shadow-[10px_0_30px_-15px_rgba(0,0,0,0.05)]">
+        <aside className="w-80 bg-slate-900/40 backdrop-blur-xl border-r border-white/10 min-h-[calc(100vh-90px)] p-8 hidden md:flex flex-col shadow-[10px_0_30px_-15px_rgba(0,0,0,0.5)]">
             <div className="mb-10">
                 <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 drop-shadow-sm">{t('sidebar.menu')}</h2>
                 <nav className="flex flex-col gap-3">
@@ -18,8 +18,8 @@ const Sidebar = () => {
                             className={({ isActive }) => 
                                 `px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-300 transform ${
                                     isActive 
-                                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_10px_20px_rgba(79,70,229,0.3)] hover:-translate-y-1' 
-                                    : 'bg-slate-50 text-slate-600 hover:bg-white hover:text-blue-600 hover:shadow-md border border-transparent hover:border-slate-100'
+                                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-[0_10px_20px_rgba(168,85,247,0.4)] hover:-translate-y-1' 
+                                    : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white hover:shadow-lg border border-transparent hover:border-white/10'
                                 }`
                             }
                         >
@@ -33,8 +33,8 @@ const Sidebar = () => {
                             className={({ isActive }) => 
                                 `px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-300 transform mt-2 ${
                                     isActive 
-                                    ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white shadow-[0_10px_20px_rgba(124,58,237,0.3)] hover:-translate-y-1' 
-                                    : 'bg-slate-50 text-slate-600 hover:bg-white hover:text-purple-600 hover:shadow-md border border-transparent hover:border-slate-100'
+                                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_10px_20px_rgba(147,51,234,0.4)] hover:-translate-y-1' 
+                                    : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white hover:shadow-lg border border-transparent hover:border-white/10'
                                 }`
                             }
                         >

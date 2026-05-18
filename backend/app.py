@@ -175,7 +175,7 @@ def login():
 # --- ACCESS CONTROL + ENCRYPTION: Submit Job Application ---
 # Protected route — requires a valid JWT (@token_required).
 # Only users with the "Candidate" role are permitted; HR users are blocked (RBAC enforcement).
-# The expected salary is encrypted with Fernet/AES before being stored to protect sensitive data.
+# The expected salary is encrypted with Fernet/AES-128 before being stored to protect sensitive data.
 @app.route("/apply", methods=["POST"])
 @token_required
 def apply():
@@ -215,7 +215,7 @@ def apply():
         return jsonify({"error": "You have already submitted an application!"}), 400
 
     # ENCRYPTION: Encrypt the salary before storing it in the database.
-    # SecurityManager uses symmetric encryption (Fernet/AES) so the value can be decrypted later.
+    # SecurityManager uses symmetric encryption (Fernet/AES-128) so the value can be decrypted later.
     encrypted_salary = SecurityManager.encrypt_data(salary)
 
     new_app = Application(
@@ -275,7 +275,8 @@ def get_my_application():
             "job": app_row.position,
             "school": app_row.school,
             "department": app_row.department,
-            "salary": decrypted_salary  # Plaintext salary returned only to the owning candidate
+            "salary": decrypted_salary,  # Plaintext salary returned only to the owning candidate
+            "status": app_row.status
         }
     }), 200
 
@@ -310,7 +311,8 @@ def get_all_candidates():
             "position": app_row.position,
             "evaluator_name": "System",  # Placeholder — will be replaced with actual reviewer logic
             "decrypted_salary": decrypted_salary,
-            "secret_note": app_row.notes
+            "secret_note": app_row.notes,
+            "status": app_row.status
         })
     
     # Log HR access to candidate list (Security Audit)
@@ -328,12 +330,13 @@ def get_hr_stats():
     applications = Application.query.all()
     # Filter out corrupted records where candidate or user is missing
     valid_applications = [a for a in applications if a.candidate and a.candidate.user]
-    # Applications without a note are considered pending review
-    pending = [a for a in valid_applications if not a.notes]
+    
+    pending = [a for a in valid_applications if a.status == 'submitted']
+    reviewed = [a for a in valid_applications if a.status != 'submitted']
+    
     return jsonify({
-        "totalCandidates": len(valid_applications),
-        "pendingReviews": len(pending),
-        "alerts": 0
+        "reviewedApplications": len(reviewed),
+        "unreviewedApplications": len(pending)
     }), 200
 
 
@@ -345,14 +348,20 @@ def get_hr_stats():
 def add_note(candidate_id):
     data = request.get_json()
     note = data.get("note", "")
+    status = data.get("status", "")
 
     app_row = Application.query.get(candidate_id)
     if app_row:
-        app_row.notes = note
+        if note is not None:
+            app_row.notes = note
+        if status:
+            app_row.status = status
+        elif app_row.status == 'submitted':
+            app_row.status = 'reviewing'  # Move application to "under review" state if no explicit status is provided
+            
         app_row.reviewed_by = request.user["id"]  # Track which HR user added the note
-        app_row.status = 'reviewing'  # Move application to "under review" state
         db.session.commit()
-        return jsonify({"message": "Note updated successfully!"}), 200
+        return jsonify({"message": "Note and status updated successfully!"}), 200
     return jsonify({"error": "Application not found"}), 404
 
 

@@ -61,7 +61,7 @@ class SecurityManager:
             return False
 
     # ------------------------------------------------------------------
-    # ENCRYPTION: Data Encryption and Decryption (Fernet / AES)
+    # ENCRYPTION: Data Encryption and Decryption (Fernet / AES-128)
     # ------------------------------------------------------------------
 
     @staticmethod
