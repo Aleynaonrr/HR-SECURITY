@@ -58,7 +58,7 @@ const AdminPanel = () => {
     }
 
     return (
-        <div className="p-8 md:p-14 max-w-[90rem] mx-auto w-full min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900">
+        <div className="p-8 md:p-14 max-w-[90rem] mx-auto w-full min-h-screen bg-transparent">
             <header className="mb-12 bg-indigo-900/40 backdrop-blur-xl p-8 rounded-3xl shadow-[0_15px_40px_-15px_rgba(0,0,0,0.5)] border border-indigo-400/30 flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-sm">{t('admin.title')}</h1>

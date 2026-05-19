@@ -181,6 +181,7 @@ def login():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
+    lang = request.headers.get("Accept-Language", "en")
 
     if not email or not password:
         return jsonify({"error": "Email and password required!"}), 400
@@ -189,7 +190,11 @@ def login():
 
     # check_password() compares the submitted password against the stored hash
     if not user or not user.check_password(password):
-        return jsonify({"error": "Invalid credentials!"}), 401
+        return jsonify({"error": "Geçersiz kimlik bilgileri!" if lang == 'tr' else "Invalid credentials!"}), 401
+
+    # Block HR users from using the standard candidate login
+    if user.role == "HR":
+        return jsonify({"error": "Lütfen İK (HR) giriş sayfasını kullanın." if lang == 'tr' else "Please use the HR login page."}), 403
 
     # Generate a signed JWT containing the user's role for downstream access control checks
     token = generate_token(user.id, user.first_name, user.last_name, user.role)

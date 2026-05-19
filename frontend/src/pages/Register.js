@@ -56,7 +56,7 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 py-20 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-transparent py-20 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl w-full space-y-10 bg-white/10 backdrop-blur-xl p-14 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-t border-l border-white/20">
                 <div>
                     <h2 className="mt-2 text-center text-4xl font-extrabold text-white drop-shadow-sm">

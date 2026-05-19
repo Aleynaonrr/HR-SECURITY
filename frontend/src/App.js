@@ -16,11 +16,11 @@ import AdminPanel from './pages/AdminPanel';
 // Application Layout Component (Sidebar and Content area for logged-in users)
 const AppLayout = ({ children }) => {
     return (
-        <div className="flex flex-col min-h-screen bg-slate-50">
+        <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900">
             <Navbar />
             <div className="flex flex-1">
                 <Sidebar />
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-transparent">
                     {children}
                 </main>
             </div>
@@ -31,7 +31,7 @@ const AppLayout = ({ children }) => {
 // Layout with only Header (for Login/Register)
 const AuthLayout = ({ children }) => {
     return (
-        <div className="flex flex-col min-h-screen bg-slate-50">
+        <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900">
             <Navbar />
             <main className="flex-1 flex flex-col justify-center">
                 {children}
