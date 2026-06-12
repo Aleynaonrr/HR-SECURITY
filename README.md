@@ -1,7 +1,7 @@
-# HR-Soft: Secure Human Resources Management System
+# HR-Security: Secure Human Resources Management System
 
 ## 📌 About the Project
-HR-Soft is a platform that offers modern recruitment processes and employee data management with the highest security standards. All processes, from candidate applications to the HR management panel, are designed with a focus on efficiency and data privacy.
+HR-Security is a platform that offers modern recruitment processes and employee data management with the highest security standards. All processes, from candidate applications to the HR management panel, are designed with a focus on efficiency and data privacy.
 
 ## 👥 Contributors
 * **Büşra Ceylan** - Frontend Developer - [@busracode](https://github.com/busracode)
